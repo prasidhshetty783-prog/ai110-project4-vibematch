@@ -1,0 +1,6 @@
+{
+  "chill lofi for studying": "{\"favorite_genre\": \"lofi\", \"favorite_mood\": \"chill\", \"target_energy\": 0.35, \"likes_acoustic\": true, \"wants_instrumental\": true, \"avoid_explicit\": false}",
+  "happy polka for a road trip": "{\"favorite_genre\": \"polka\", \"favorite_mood\": \"happy\", \"target_energy\": 0.8, \"likes_acoustic\": null, \"wants_instrumental\": false, \"avoid_explicit\": false}",
+  "maximum intensity metal": "{\"favorite_genre\": \"metal\", \"favorite_mood\": \"aggressive\", \"target_energy\": 1.4, \"likes_acoustic\": false, \"wants_instrumental\": false, \"avoid_explicit\": false}",
+  "high energy rock, clean lyrics": {"error": "503 overloaded"}
+}

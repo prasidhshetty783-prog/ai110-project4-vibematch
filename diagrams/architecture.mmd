@@ -1,0 +1,18 @@
+flowchart TD
+    U[User types a request<br/>"chill music for studying, no lyrics"] --> G1{Input guardrail<br/>empty / too long / off-topic?}
+    G1 -- blocked --> R0[Friendly refusal + example prompt]
+    G1 -- ok --> P[Step 1 · Parser agent<br/>Claude -> JSON UserProfile]
+    P --> V1{Schema check<br/>genre/mood known? energy 0-1?}
+    V1 -- fail --> FB[Fallback: keyword parser<br/>+ flag 'low confidence']
+    V1 -- ok --> S
+    FB --> S[Step 2 · Retrieve<br/>existing score_song ranks catalog -> top-k]
+    S --> K[Step 2b · Retrieve song notes<br/>data/song_notes.md for top-k only]
+    K --> E[Step 3 · Explainer<br/>Claude writes why, using ONLY retrieved facts]
+    E --> V2{Verifier<br/>every title in top-k?<br/>no invented songs or numbers?}
+    V2 -- fail --> T[Fallback: template explanation<br/>from score reasons]
+    V2 -- ok --> O[Output: ranked table + grounded explanation + confidence]
+    T --> O
+    O --> L[(logs/run_log.txt)]
+    EV[eval/run_eval.py<br/>fixed test cases] -.-> P
+    EV -.-> M[(eval/results.txt<br/>pass rate, grounding, guardrail catches)]
+    H[Human-in-the-loop:<br/>user can accept or say 'more upbeat'] -.-> P
