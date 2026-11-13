@@ -15,13 +15,15 @@ logger = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parent.parent
 SONGS_CSV = ROOT / "data" / "songs.csv"
 FIXTURE_JSON = ROOT / "tests" / "fixtures" / "explainer_responses.json"
+DEBUG_LOG = ROOT / "logs" / "explainer_debug.txt"
 DEFAULT_MODEL = "claude-haiku-5-5"
-MAX_TOKENS = 1024
+MAX_TOKENS = 1200
 
 SYSTEM_PROMPT = (
     "You explain music recommendations to a listener.\n"
     "Explain each recommendation using only the facts in the notes. "
     "Do not mention any song not in the list.\n"
+    "Keep each song's explanation to two short sentences.\n"
     "Write one short paragraph per song and say how it fits the listener's profile."
 )
 
@@ -41,6 +43,22 @@ def _prompt(profile: UserProfile, ranked: list[dict]) -> str:
     return f"Listener profile: {json.dumps(asdict(profile))}\n\nNotes:\n{notes}"
 
 
+def _log_max_tokens(response: object) -> None:
+    """Append stop_reason, output token count and content block types to DEBUG_LOG for a max_tokens reply."""
+    from datetime import datetime
+
+    usage = getattr(response, "usage", None)
+    output_tokens = getattr(usage, "output_tokens", None)
+    block_types = [getattr(block, "type", "?") for block in getattr(response, "content", [])]
+    DEBUG_LOG.parent.mkdir(parents=True, exist_ok=True)
+    line = (f"{datetime.now().isoformat(timespec='seconds')}\t"
+            f"stop_reason={response.stop_reason}\t"
+            f"output_tokens={output_tokens}\t"
+            f"block_types={','.join(block_types) or 'none'}\n")
+    with open(DEBUG_LOG, "a", encoding="utf-8") as f:
+        f.write(line)
+
+
 def _call_llm(profile: UserProfile, ranked: list[dict]) -> str:
     """Ask Claude for the explanation and return its text reply."""
     api_key = os.environ.get("ANTHROPIC_API_KEY")
@@ -53,12 +71,15 @@ def _call_llm(profile: UserProfile, ranked: list[dict]) -> str:
         response = client.messages.create(
             model=model,
             max_tokens=MAX_TOKENS,
+            thinking={"type": "disabled"},
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": _prompt(profile, ranked)}],
         )
     except anthropic.APIError as exc:
         raise ExplainFailure(f"API error: {exc}") from exc
 
+    if response.stop_reason == "max_tokens":
+        _log_max_tokens(response)
     # Anything but a clean end_turn (refusal, truncation) is not a usable explanation.
     if response.stop_reason != "end_turn":
         raise ExplainFailure(f"stop_reason was {response.stop_reason}")

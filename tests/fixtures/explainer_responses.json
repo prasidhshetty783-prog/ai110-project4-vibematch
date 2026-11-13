@@ -1,3 +1,10 @@
 {
-  "reply": "Sunrise City is a pop track by Neon Echo tagged happy, with energy 0.82 and a tempo of 118 BPM, so it fits a happy pop request. Rooftop Lights is an indie pop track with a happy mood and energy 0.76, a close match on both mood and energy."
+  "normal-1": "Library Rain and Midnight Coding are the closest matches: both are lofi tracks with a chill mood, at energy 0.35 and 0.42. Focus Flow is a third lofi pick with a focused mood and energy 0.40, which suits a studying request.",
+  "normal-2": "Sunrise City is the best fit: a pop track with a happy mood and energy 0.82. Rooftop Lights is an indie pop track with a happy mood, and Gym Hero is a pop track with energy 0.93 but an intense mood.",
+  "normal-3": "Storm Runner is the strongest match: a rock track with an intense mood and energy 0.91. Gym Hero is a pop track tagged workout, with an intense mood and energy 0.93.",
+  "normal-4": "Spacewalk Thoughts is an ambient track with a chill mood, tagged dreamy and night. Late Static is a downtempo track with a dreamy mood and energy 0.25.",
+  "normal-5": "Empty Station Blues is the only blues track in these results, with a melancholy mood and energy 0.33.",
+  "normal-6": "Velvet Hours is the closest match: an r&b track with a romantic mood, tagged night and romance.",
+  "conflict-1": "Winter Nocturne matches both the classical genre and the sad mood, though its energy of 0.18 is low rather than high. Barn Dance Revival has high energy (0.85) but is a folk track, so it only partly fits.",
+  "conflict-2": "Iron Cathedral is the only metal track here, but its mood is aggressive rather than happy, so it matches on genre only. Rooftop Lights is an indie pop track with a happy mood and energy 0.76."
 }
